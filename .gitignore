@@ -1,6 +1,5 @@
 /.idea/*
 /.env
-/public/
 /vendor/
 
 ###> phpunit/phpunit ###
