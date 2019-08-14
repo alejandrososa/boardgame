@@ -1,0 +1,22 @@
+/.idea/*
+/.env
+/public/
+/vendor/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###
+
+###> behat/symfony2-extension ###
+behat.yml
+###< behat/symfony2-extension ###
+
+*.DS_STORE
+build/
+.vagrant
+.sass-cache
+
+/nbproject/private/
+/db/*
+/data/
+/log/
