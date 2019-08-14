@@ -1,0 +1,4 @@
+imports:
+    - { resource: "services/commands.yaml" }
+    - { resource: "services/repositories.yaml" }
+    - { resource: "services/infrastructure.yaml" }

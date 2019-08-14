@@ -1,0 +1,7 @@
+web.homepage:
+    path: /
+    controller: Mayordomo\Ui\Controller\HomePageController::index
+    defaults:
+        template: 'homepage.html.php'
+        site_name: 'ACME'
+        methods: GET

@@ -1,0 +1,17 @@
+services:
+  #templating
+  Mayordomo\Infrastructure\Engine\Templating:
+    class: Mayordomo\Infrastructure\Engine\Templating
+    public: true
+
+  #routing
+  Mayordomo\Infrastructure\Routing\Router:
+    class: Mayordomo\Infrastructure\Routing\Router
+    arguments: ['@service_container']
+    public: true
+
+  #controllers
+  Mayordomo\Ui\Controller\HomePageController:
+    class: Mayordomo\Ui\Controller\HomePageController
+    arguments: ['@service_container']
+    public: true

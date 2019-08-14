@@ -1,0 +1,4 @@
+services:
+
+  mayordomo.persistence.session_reposiroty:
+    class: Mayordomo\Infrastructure\Persistence\Session\SessionRepository

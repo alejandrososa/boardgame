@@ -1,0 +1,12 @@
+framework:
+  secret: '%env(APP_SECRET)%'
+  default_locale: es
+  #csrf_protection: true
+  http_method_override: true
+
+  templating: { engines: ['twig'] }
+
+#twig:
+#    paths: ['%kernel.project_dir%/templates']
+#    debug: '%kernel.debug%'
+#    strict_variables: '%kernel.debug%'
