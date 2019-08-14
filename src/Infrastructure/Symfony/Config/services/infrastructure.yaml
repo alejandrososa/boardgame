@@ -15,3 +15,8 @@ services:
     class: Mayordomo\Ui\Controller\HomePageController
     arguments: ['@service_container']
     public: true
+
+  Mayordomo\Ui\Controller\ApiController:
+    class: Mayordomo\Ui\Controller\ApiController
+    arguments: ['@service_container']
+    public: true
