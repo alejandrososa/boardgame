@@ -56,8 +56,6 @@ class Game implements Entity
 
     public static function startNewGame(Board $board, Player $playerOne, Player $playerTwo): self
     {
-        //TODO MOVE TO HANDLER
-        $board->assign20PercentOfFieldsToPlayers();
         $self = new self($board, $playerOne, $playerTwo);
         $self->chooseFirstPlayerRandomly();
         return $self;
@@ -84,38 +82,47 @@ class Game implements Entity
 
     public function makeAMove(int $field): void
     {
-        // general
         $size = $this->board->getSize();
-        $panel = $panel0 = $this->board->getPanel();
+        $panel = $this->board->getPanel();
         $player = $this->getNowPlayerTurn();
 
-        // from move to end
-        if ($field != ($size - 1)) {
-            $forward = array_slice($panel, $field, -1, true);
-            $check = $this->assignFieldsTo($forward, $panel[$field], $player, false);
-//            echo '<pre>';print_r([__CLASS__,__LINE__,__METHOD__,
-//                $field, $size, $panel, $player,
-//                $forward, $check
-//            ]);echo '</pre>';die();
-            if ($check['mark']) {
-                for ($i = ($field + 1); $i <= $check['until']; $i++) {
-                    $panel[$i] = $player;
-                }
-            }
-        }
-        // from init to move
-        if ($field != 0) {
-            $backward = array_slice($panel, 0, $field, true);
-            $check = $this->assignFieldsTo($backward, $panel[$field], $player, true);
-            if ($check['mark']) {
-                for ($i = $check['until']; $i < $field; $i++) {
-                    $panel[$i] = $player;
-                }
-            }
-        }
+        $panel = $this->moveFieldAlong($field, $size, $panel, $player);
+        $panel = $this->moveFieldBack($field, $panel, $player);
 
         $panel[$field] = $player->getId();
         $this->board = Board::createFromBoard($panel);
+    }
+
+    private function moveFieldAlong(int $field, int $size, array $panel, Player $player): array
+    {
+        if ($field != (1 - $size)) {
+            $moveAlong = array_slice($panel, $field, -1, true);
+            list('paint' => $paint, 'limit' => $until) = $this->assignFieldsTo($moveAlong, $panel[$field], $player, false);
+            if ($paint) {
+                $panel = $this->paintFields($panel, $player, ($field + 1), $until);
+            }
+        }
+        return $panel;
+    }
+
+    private function moveFieldBack(int $field, array $panel, Player $player): array
+    {
+        if (0 != $field) {
+            $moveBack = array_slice($panel, 0, $field, true);
+            list('paint' => $paint, 'limit' => $until) = $this->assignFieldsTo($moveBack, $panel[$field], $player, true);
+            if ($paint) {
+                $panel = $this->paintFields($panel, $player, $until, $field);
+            }
+        }
+        return $panel;
+    }
+
+    private function paintFields(array $panel, Player $player, $index, $length): array
+    {
+        for ($i = $index; $i <= $length; $i++) {
+            $panel[$i] = $player;
+        }
+        return $panel;
     }
 
     private function assignFieldsTo($forward, $case, $player, $reverse = true)
@@ -134,10 +141,7 @@ class Game implements Entity
                 break;
             }
         }
-        return [
-            'mark' => $purity,
-            'until' => $limit
-        ];
+        return ['paint' => $purity, 'limit' => $limit];
     }
 
     public function nextPlayerTurn(): void
