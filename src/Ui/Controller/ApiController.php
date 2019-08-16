@@ -35,7 +35,7 @@ class ApiController extends BaseController
         try {
             $handler = $this->container->get(ContinueGameStartedHandler::class);
             $results = $handler->handle(new ContinueGameStarted($field));
-        } catch (Exception $e) {
+        } catch (\Error $e) {
             return $this->json(sprintf('Error: %s', $e->getMessage()), Response::HTTP_BAD_REQUEST);
         }
 

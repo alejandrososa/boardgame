@@ -77,7 +77,12 @@ class Game implements Entity
             throw new DomainException('invalid history');
         }
 
-        return new self($history['board'], $history['player_one'], $history['player_two'], $history['current_player']);
+        return new self(
+            $history['board'],
+            $history['player_one'],
+            $history['player_two'],
+            $history['current_player']
+        );
     }
 
     public function makeAMove(int $field): void
@@ -162,9 +167,10 @@ class Game implements Entity
         $this->nowPlayerTurn = $player;
     }
 
-    public function checkCurrentPlayerWins(): bool
+    public function checkIfPlayerWins(Player $player): bool
     {
-        $currentPlayerId = $this->getNowPlayerTurn()->getId();
+        $currentPlayerId = $player->getId();
+
         $panel = $this->board->getPanel();
         $results = array_unique($panel);
 
@@ -186,11 +192,19 @@ class Game implements Entity
 
     public function toArray(): array
     {
+        $winner = 'none';
+        if($this->checkIfPlayerWins($this->getPlayerOne())){
+            $winner = $this->getPlayerOne()->getName();
+        }
+        if($this->checkIfPlayerWins($this->getPlayerTwo())){
+            $winner = $this->getPlayerTwo()->getName();
+        }
         return [
             'board' => $this->getBoard()->toArray(),
             'player_one' => $this->getPlayerOne()->toArray(),
             'player_two' => $this->getPlayerTwo()->toArray(),
-            'current_player' => $this->getNowPlayerTurn()->toArray()
+            'current_player' => $this->getNowPlayerTurn()->toArray(),
+            'player_win' => $winner
         ];
     }
 }

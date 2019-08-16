@@ -27,7 +27,6 @@ class GameTest extends TestCase
     protected function setUp()
     {
         $this->board = Board::createWithRandomSize();
-        $this->board->assign20PercentOfFieldsToPlayers();
         $this->playerOne = PlayerMother::create('Mariela', 1);
         $this->playerTwo = PlayerMother::create('Pedro', 2);
     }
@@ -52,6 +51,7 @@ class GameTest extends TestCase
 
     public function test_validate_that_a_board_and_2_players_can_start_the_game()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $this->assertInstanceOf(Game::class, $game);
     }
@@ -60,6 +60,7 @@ class GameTest extends TestCase
     {
         $players = [$this->playerOne, $this->playerTwo];
 
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $firstPlayer = $game->getNowPlayerTurn();
 
@@ -68,16 +69,20 @@ class GameTest extends TestCase
 
     public function test_validate_that_a_player_can_move_fill_a_field_on_the_board()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
-        $emptySpacesBeforeChange = array_count_values($game->getBoard()->getPanel())[0];
+        $emptySpacesBeforeChange = array_count_values($game->getBoard()->getPanel());
         $game->makeAMove(5);
-        $emptySpacesAfterChange = array_count_values($game->getBoard()->getPanel())[0];
+        $emptySpacesAfterChange = array_count_values($game->getBoard()->getPanel());
+
+        echo '<pre>';print_r([__CLASS__,__LINE__,__METHOD__, $emptySpacesBeforeChange, $emptySpacesAfterChange]);echo '</pre>';die();
 
         $this->assertLessThanOrEqual($emptySpacesBeforeChange, $emptySpacesAfterChange);
     }
 
     public function test_validate_that_when_a_player_moves_a_field_the_game_changes_player()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $currentPlayerBeforePlay = $game->getNowPlayerTurn();
         $game->makeAMove(5);
@@ -97,6 +102,7 @@ class GameTest extends TestCase
 
     public function test_validate_that_the_game_can_be_continued_from_a_game_started()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $gameStarted = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $history = $this->getGameHistory($gameStarted->getNowPlayerTurn());
         $game = Game::continueFromArray($history);
@@ -115,6 +121,6 @@ class GameTest extends TestCase
         ];
         $game = Game::continueFromArray($history);
 
-        $this->assertTrue($game->checkCurrentPlayerWins());
+        $this->assertTrue($game->checkIfPlayerWins($this->playerOne));
     }
 }
