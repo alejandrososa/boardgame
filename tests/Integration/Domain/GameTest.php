@@ -75,8 +75,6 @@ class GameTest extends TestCase
         $game->makeAMove(5);
         $emptySpacesAfterChange = array_count_values($game->getBoard()->getPanel());
 
-        echo '<pre>';print_r([__CLASS__,__LINE__,__METHOD__, $emptySpacesBeforeChange, $emptySpacesAfterChange]);echo '</pre>';die();
-
         $this->assertLessThanOrEqual($emptySpacesBeforeChange, $emptySpacesAfterChange);
     }
 
