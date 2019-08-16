@@ -8,18 +8,21 @@ class SessionGameRepository implements GameRepository
 {
     private const ID = 'game';
 
-    private $item;
-
     public function save(Game $game): void
     {
+        unset($_SESSION[self::ID]);
+        $_SESSION[self::ID] = json_encode($game->toArray());
     }
 
     public function get(): ?Game
     {
-        return null;
-    }
+        $history = $_SESSION[self::ID];
 
-    public function delete(): void
-    {
+        if (empty($history)){
+            throw new \Exception('Game not found');
+        }
+
+        $history = json_decode($history);
+        return Game::continueFromArray($history);
     }
 }

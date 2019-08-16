@@ -29,7 +29,7 @@ class Player implements ValueObject
         return $this->getPosition() % 2 ? Board::SPACE_PLAYER_ONE : Board::SPACE_PLAYER_TWO;
     }
 
-    public static function createPlayer(string $name, int $position): self
+    public static function create(string $name, int $position): self
     {
         return new self($name, $position);
     }

@@ -8,7 +8,7 @@ final class PlayerMother
 {
     public static function create(string $name, int $position): Player
     {
-        return Player::createPlayer($name, $position);
+        return Player::create($name, $position);
     }
 
     public static function random(): Player

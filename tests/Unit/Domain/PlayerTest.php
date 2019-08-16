@@ -27,7 +27,7 @@ class PlayerTest extends TestCase
 
     public function test_validate_that_I_can_create_a_player_with_name_and_with_a_turn()
     {
-        $player = Player::createPlayer($this->player->getName(), $this->player->getPosition());
+        $player = Player::create($this->player->getName(), $this->player->getPosition());
         $this->assertEquals($this->player->getName(), $player->getName());
         $this->assertEquals($this->player->getPosition(), $player->getPosition());
     }

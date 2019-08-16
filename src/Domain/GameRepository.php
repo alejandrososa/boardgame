@@ -6,5 +6,4 @@ interface GameRepository
 {
     public function save(Game $game): void;
     public function get(): ?Game;
-    public function delete(): void;
 }

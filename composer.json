@@ -21,6 +21,7 @@
   },
   "require": {
     "php": "^7.1",
+    "ext-json": "*",
     "symfony/routing": "^4.3",
     "symfony/messenger": "^4.3",
     "symfony/dependency-injection": "^4.3",

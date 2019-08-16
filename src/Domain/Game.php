@@ -86,13 +86,17 @@ class Game implements Entity
     {
         // general
         $size = $this->board->getSize();
-        $panel = $this->board->getPanel();
+        $panel = $panel0 = $this->board->getPanel();
         $player = $this->getNowPlayerTurn();
 
         // from move to end
         if ($field != ($size - 1)) {
             $forward = array_slice($panel, $field, -1, true);
             $check = $this->assignFieldsTo($forward, $panel[$field], $player, false);
+//            echo '<pre>';print_r([__CLASS__,__LINE__,__METHOD__,
+//                $field, $size, $panel, $player,
+//                $forward, $check
+//            ]);echo '</pre>';die();
             if ($check['mark']) {
                 for ($i = ($field + 1); $i <= $check['until']; $i++) {
                     $panel[$i] = $player;
@@ -109,9 +113,8 @@ class Game implements Entity
                 }
             }
         }
-        // move for player
-        $panel[$field] = $player->getId();
 
+        $panel[$field] = $player->getId();
         $this->board = Board::createFromBoard($panel);
     }
 
@@ -175,5 +178,15 @@ class Game implements Entity
             && $this->board->equals($other->getBoard())
             && $this->playerOne->equals($other->getPlayerOne())
             && $this->playerTwo->equals($other->getPlayerTwo());
+    }
+
+    public function toArray()
+    {
+        return [
+            'board' => $this->getBoard(),
+            'player_one' => $this->getPlayerOne(),
+            'player_two' => $this->getPlayerTwo(),
+            'current_player' => $this->getNowPlayerTurn()
+        ];
     }
 }
