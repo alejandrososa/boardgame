@@ -26,6 +26,8 @@ class CreateNewGameHandler
         $playerOne = Player::create($command->getNamePlayerOne(), 1);
         $playerTwo = Player::create($command->getNamePlayerTwo(), 2);
 
+        $board->assign20PercentOfFieldsToPlayers();
+
         $game = Game::startNewGame($board, $playerOne, $playerTwo);
         $this->repository->save($game);
 

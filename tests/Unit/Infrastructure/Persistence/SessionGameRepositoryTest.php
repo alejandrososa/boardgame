@@ -44,7 +44,7 @@ class SessionGameRepositoryTest extends TestCase
         $this->assertNull($this->repository->save($game));
     }
 
-    public function testGet()
+    public function test_get()
     {
         $game = $this->getGame();
 

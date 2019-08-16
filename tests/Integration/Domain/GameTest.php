@@ -27,6 +27,7 @@ class GameTest extends TestCase
     protected function setUp()
     {
         $this->board = Board::createWithRandomSize();
+        $this->board->assign20PercentOfFieldsToPlayers();
         $this->playerOne = PlayerMother::create('Mariela', 1);
         $this->playerTwo = PlayerMother::create('Pedro', 2);
     }
