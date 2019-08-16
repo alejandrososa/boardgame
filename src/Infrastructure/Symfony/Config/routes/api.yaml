@@ -1,0 +1,11 @@
+api.start_game:
+  path: /api/start-game
+  controller: Mayordomo\Ui\Controller\ApiController::startGame
+  defaults:
+    methods: POST
+
+api.play_next_turn:
+  path: /api/play-next-turn
+  controller: Mayordomo\Ui\Controller\ApiController::playNextTurn
+  defaults:
+    methods: POST

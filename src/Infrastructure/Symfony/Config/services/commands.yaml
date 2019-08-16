@@ -1,1 +1,11 @@
 services:
+
+  Mayordomo\Application\CreateNewGameHandler:
+    class: Mayordomo\Application\CreateNewGameHandler
+    arguments: ['@Mayordomo\Infrastructure\Persistence\Session\SessionGameRepository']
+    public: true
+
+  Mayordomo\Application\ContinueGameStartedHandler:
+    class: Mayordomo\Application\ContinueGameStartedHandler
+    arguments: ['@Mayordomo\Infrastructure\Persistence\Session\SessionGameRepository']
+    public: true

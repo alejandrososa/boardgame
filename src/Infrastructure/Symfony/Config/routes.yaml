@@ -1,2 +1,5 @@
 web:
   resource: "routes/web.yaml"
+
+api:
+  resource: "routes/api.yaml"

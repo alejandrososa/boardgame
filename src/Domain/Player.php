@@ -2,7 +2,6 @@
 
 namespace Mayordomo\Domain;
 
-
 class Player implements ValueObject
 {
     private $name;
@@ -41,5 +40,14 @@ class Player implements ValueObject
             && $this->name === $object->getName()
             && $this->position === $object->getPosition()
             && $this->getId() === $object->getId();
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'position' => $this->getPosition(),
+        ];
     }
 }

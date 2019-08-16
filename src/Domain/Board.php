@@ -78,4 +78,12 @@ class Board implements ValueObject
             && $this->panel === $object->getPanel()
             && $this->size === $object->getSize();
     }
+
+    public function toArray(): array
+    {
+        return [
+            'size' => $this->getSize(),
+            'panel' => $this->getPanel(),
+        ];
+    }
 }
