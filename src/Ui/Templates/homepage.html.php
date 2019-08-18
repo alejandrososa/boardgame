@@ -14,6 +14,11 @@
             background-color: white;
         }
 
+        #form-start-game {
+            width: 35%;
+            margin: 0px auto;
+        }
+
         .row {
             display: flex;
             flex-direction: row;
@@ -60,11 +65,11 @@
         <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72"
              height="72">
         <h1 class="h3 mb-3 font-weight-normal">Boardgame</h1>
-        <p>Welcome to play a simple board game.<br/>There will be 2 players, playing in the same browser. </p>
+        <p>Welcome to play a simple board game. There will be 2 players, playing in the same browser. </p>
         <p>The player who completes all the fields with his color will be the winner. To enjoy and play!!!</p>
     </div>
 
-    <form id="form-start-game" class="m-3">
+    <form id="form-start-game" class="m-5 ml-auto mr-auto">
         <div class="form-label-group mb-3">
             <input type="text" id="txt-player-one" name="player-one" class="form-control" placeholder="Name player two"
                    required="" autofocus="">
