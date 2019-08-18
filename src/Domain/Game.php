@@ -3,6 +3,7 @@
 namespace Mayordomo\Domain;
 
 use DomainException;
+use stdClass;
 
 class Game implements Entity
 {
@@ -94,17 +95,18 @@ class Game implements Entity
         $panel = $this->moveFieldAlong($field, $size, $panel, $player);
         $panel = $this->moveFieldBack($field, $panel, $player);
 
-        $panel[$field] = $player->getId();
+        $panel[$field] = $player->getPosition();
+
         $this->board = Board::createFromBoard($panel);
     }
 
     private function moveFieldAlong(int $field, int $size, array $panel, Player $player): array
     {
-        if ($field != (1 - $size)) {
-            $moveAlong = array_slice($panel, $field, -1, true);
-            list('paint' => $paint, 'limit' => $until) = $this->assignFieldsTo($moveAlong, $panel[$field], $player, false);
-            if ($paint) {
-                $panel = $this->paintFields($panel, $player, ($field + 1), $until);
+        if ($field !== ($size - 1)) {
+            $forward = array_slice($panel, $field, -1, true);
+            $checker = $this->assignFieldsTo($forward, $panel[$field], $player, false);
+            if ($checker->paint) {
+                $panel = $this->paintFields($panel, $player, $field + 1, $checker->limit);
             }
         }
         return $panel;
@@ -112,11 +114,11 @@ class Game implements Entity
 
     private function moveFieldBack(int $field, array $panel, Player $player): array
     {
-        if (0 != $field) {
-            $moveBack = array_slice($panel, 0, $field, true);
-            list('paint' => $paint, 'limit' => $until) = $this->assignFieldsTo($moveBack, $panel[$field], $player, true);
-            if ($paint) {
-                $panel = $this->paintFields($panel, $player, $until, $field);
+        if ($field !== 0) {
+            $backward = array_slice($panel, 0, $field, true);
+            $checker = $this->assignFieldsTo($backward, $panel[$field], $player, true);
+            if ($checker->paint) {
+                $panel = $this->paintFields($panel, $player, $checker->limit, $field);
             }
         }
         return $panel;
@@ -125,28 +127,31 @@ class Game implements Entity
     private function paintFields(array $panel, Player $player, $index, $length): array
     {
         for ($i = $index; $i <= $length; $i++) {
-            $panel[$i] = $player;
+            $panel[$i] = $player->getPosition();
         }
         return $panel;
     }
 
-    private function assignFieldsTo($forward, $case, $player, $reverse = true)
+    private function assignFieldsTo($forward, $case, Player $player, $reverse = true): stdClass
     {
+        $checker = new stdClass();
+        $checker->paint = false;
+        $checker->limit = 0;
+
         if ($reverse) {
             $forward = array_reverse($forward, true);
         }
-        $purity = false;
-        $limit = 0;
+
         foreach ($forward as $position => $cell) {
             if ($cell != $case) {
-                if ($cell == $player) {
-                    $limit = $position;
-                    $purity = true;
+                if ($cell == $player->getPosition()) {
+                    $checker->paint = true;
+                    $checker->limit = $position;
                 }
                 break;
             }
         }
-        return ['paint' => $purity, 'limit' => $limit];
+        return $checker;
     }
 
     public function nextPlayerTurn(): void
@@ -169,7 +174,7 @@ class Game implements Entity
 
     public function checkIfPlayerWins(Player $player): bool
     {
-        $currentPlayerId = $player->getId();
+        $currentPlayerId = $player->getPosition();
 
         $panel = $this->board->getPanel();
         $results = array_unique($panel);

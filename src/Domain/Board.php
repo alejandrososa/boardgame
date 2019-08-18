@@ -9,8 +9,8 @@ class Board implements ValueObject
     const START_INDEX = 0;
     const FIELD_WHITE = 0;
     const DEFAULT_PERCENT_FIELDS = 0.2;
-    const SPACE_PLAYER_ONE = 'X';
-    const SPACE_PLAYER_TWO = 'Y';
+    const SPACE_PLAYER_ONE = 1;
+    const SPACE_PLAYER_TWO = 2;
 
     private $size = 0;
     private $panel = [];

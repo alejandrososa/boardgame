@@ -121,9 +121,9 @@
                 panelSize: 10,
                 panel: $("#panel"),
                 currentPlayer: $("#current-player"),
-                fieldWhite: $("<div class='column border field'><div class='white-column'>0</div></div>"),
-                fieldBlue: $("<div class='column border field'><div class='blue-column'>X</div></div>"),
-                fieldRed: $("<div class='column border field'><div class='red-column'>Y</div></div>"),
+                fieldWhite: $("<div class='column border field'><div class='white-column'></div></div>"),
+                fieldBlue: $("<div class='column border field'><div class='blue-column'></div></div>"),
+                fieldRed: $("<div class='column border field'><div class='red-column'></div></div>"),
                 fieldSelector: ".column.border.field",
 
                 containerInfo: $("#gameboard-info"),
@@ -208,15 +208,25 @@
         },
 
         initInfoPlayer: function (player, bdg) {
-            bdg.text(player.name);
+            const { name } = player;
+            bdg.text(gameBoard.capitalizeName(name));
+        },
+
+        capitalizeName: function(name) {
+            if (typeof name !== 'string') return '';
+            return name.charAt(0).toUpperCase() + name.slice(1)
         },
 
         changeCurrentPlayer: function ({name}) {
-            gameBoard.config.currentPlayer.text(`Current player: ${name}`);
+            const playerName = gameBoard.capitalizeName(name);
+            gameBoard.config.currentPlayer.text(`Current player: ${playerName}`);
         },
         showWinner: function (player_win) {
             if(player_win !== 'none'){
-                gameBoard.config.currentPlayer.text(`Player Winner: ${player_win}`);
+                const playerName = gameBoard.capitalizeName(player_win);
+                gameBoard.config.currentPlayer.text(`Player Winner: ${playerName}`);
+                gameBoard.disableMove();
+                gameBoard.showBtnStarGame();
             }
         },
 
@@ -230,15 +240,15 @@
 
             panel.map(function(field) {
                 if(field === 0) { fieldWhite.clone().bind("click", gameBoard.moveField).appendTo(board); }
-                if(field === 'X') { fieldBlue.clone().bind("click", gameBoard.moveField).appendTo(board); }
-                if(field === 'Y') { fieldRed.clone().bind("click", gameBoard.moveField).appendTo(board); }
+                if(field === 1) { fieldBlue.clone().bind("click", gameBoard.moveField).appendTo(board); }
+                if(field === 2) { fieldRed.clone().bind("click", gameBoard.moveField).appendTo(board); }
             });
         },
 
         moveField: function (e) {
             e.preventDefault();
 
-            const fieldSelected = $(this).index() ;
+            const fieldSelected = $(this).index();
             var urlApi = gameBoard.config.apiUrlBase;
             const fd = new FormData();
             fd.append("field", fieldSelected);
@@ -259,6 +269,21 @@
                     })
                     .catch(error => console.error('Error:', error))
         },
+
+        disableMove: function () {
+            var board = gameBoard.config.panel;
+            board.children().map(function() {
+                $(this).unbind("click", gameBoard.moveField);
+                $(this).bind("click", function () { alert('You must start a new game!!!') });
+            });
+        },
+
+        showBtnStarGame: function () {
+            gameBoard.config.formBoard.show();
+            gameBoard.config.namePlayerOne.hide();
+            gameBoard.config.namePlayerTwo.hide();
+        }
+
     };
 
     $(document).ready(gameBoard.init);
