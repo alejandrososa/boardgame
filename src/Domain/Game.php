@@ -184,13 +184,13 @@ class Game implements Entity
             && $this->playerTwo->equals($other->getPlayerTwo());
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
-            'board' => $this->getBoard(),
-            'player_one' => $this->getPlayerOne(),
-            'player_two' => $this->getPlayerTwo(),
-            'current_player' => $this->getNowPlayerTurn()
+            'board' => $this->getBoard()->toArray(),
+            'player_one' => $this->getPlayerOne()->toArray(),
+            'player_two' => $this->getPlayerTwo()->toArray(),
+            'current_player' => $this->getNowPlayerTurn()->toArray()
         ];
     }
 }
