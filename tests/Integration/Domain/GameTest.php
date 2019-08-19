@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  * validate that when a player moves a field the game changes player
  * throw error if the game history is not valid to continue the game
  * validate that the game can be continued from a game started
+ * validate that you can fill in several fields in a single turn if possible
  * check current player wins
  */
 class GameTest extends TestCase
@@ -27,7 +28,6 @@ class GameTest extends TestCase
     protected function setUp()
     {
         $this->board = Board::createWithRandomSize();
-        $this->board->assign20PercentOfFieldsToPlayers();
         $this->playerOne = PlayerMother::create('Mariela', 1);
         $this->playerTwo = PlayerMother::create('Pedro', 2);
     }
@@ -52,6 +52,7 @@ class GameTest extends TestCase
 
     public function test_validate_that_a_board_and_2_players_can_start_the_game()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $this->assertInstanceOf(Game::class, $game);
     }
@@ -60,6 +61,7 @@ class GameTest extends TestCase
     {
         $players = [$this->playerOne, $this->playerTwo];
 
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $firstPlayer = $game->getNowPlayerTurn();
 
@@ -68,16 +70,18 @@ class GameTest extends TestCase
 
     public function test_validate_that_a_player_can_move_fill_a_field_on_the_board()
     {
+        $this->board = Board::createFromBoard([2,0,0,0,0,0,1,1,0,0,0,1]);
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
-        $emptySpacesBeforeChange = array_count_values($game->getBoard()->getPanel())[0];
-        $game->makeAMove(5);
-        $emptySpacesAfterChange = array_count_values($game->getBoard()->getPanel())[0];
+        $emptySpacesBeforeChange = array_count_values($game->getBoard()->getPanel());
+        $game->makeAMove(2);
+        $emptySpacesAfterChange = array_count_values($game->getBoard()->getPanel());
 
-        $this->assertLessThanOrEqual($emptySpacesBeforeChange, $emptySpacesAfterChange);
+        $this->assertNotEquals($emptySpacesBeforeChange, $emptySpacesAfterChange);
     }
 
     public function test_validate_that_when_a_player_moves_a_field_the_game_changes_player()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $game = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $currentPlayerBeforePlay = $game->getNowPlayerTurn();
         $game->makeAMove(5);
@@ -97,6 +101,7 @@ class GameTest extends TestCase
 
     public function test_validate_that_the_game_can_be_continued_from_a_game_started()
     {
+        $this->board->assign20PercentOfFieldsToPlayers();
         $gameStarted = Game::startNewGame($this->board, $this->playerOne, $this->playerTwo);
         $history = $this->getGameHistory($gameStarted->getNowPlayerTurn());
         $game = Game::continueFromArray($history);
@@ -105,16 +110,31 @@ class GameTest extends TestCase
         $this->assertTrue($gameStarted->getNowPlayerTurn()->equals($game->getNowPlayerTurn()));
     }
 
+    public function test_validate_that_you_can_fill_in_several_fields_in_a_single_turn_if_possible()
+    {
+        $history = [
+            'board' => Board::createFromBoard([2,0,0,0,1,1,0,0,1]),
+            'player_one' => $this->playerOne,
+            'player_two' => $this->playerTwo,
+            'current_player' => $this->playerTwo
+        ];
+
+        $game = Game::continueFromArray($history);
+        $game->makeAMove(3);
+
+        $this->assertEquals([2,2,2,2,1,1,0,0,1], $game->getBoard()->getPanel());
+    }
+
     public function test_check_current_player_wins()
     {
         $history = [
-            'board' => Board::createFromBoard(array_fill(0, 10, $this->playerOne->getId())),
+            'board' => Board::createFromBoard(array_fill(0, 10, $this->playerOne->getPosition())),
             'player_one' => $this->playerOne,
             'player_two' => $this->playerTwo,
             'current_player' => $this->playerOne
         ];
         $game = Game::continueFromArray($history);
 
-        $this->assertTrue($game->checkCurrentPlayerWins());
+        $this->assertTrue($game->checkIfPlayerWins($this->playerOne));
     }
 }

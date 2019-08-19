@@ -41,6 +41,7 @@ class PlayerTest extends TestCase
             public function getId() { return 'Z'; }
             public function getName() { return ''; }
             public function getPosition() { return 3; }
+            public function toArray(): array { return []; }
             public function equals(ValueObject $object): bool { return false; }
         };
 
